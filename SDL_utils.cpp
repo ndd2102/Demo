@@ -14,29 +14,6 @@ void logSDLError(std::ostream& os,
         exit(1);
     }
 }
-void initSDL(SDL_Window* &window, SDL_Renderer* &renderer, int SCREEN_WIDTH, int SCREEN_HEIGHT,
-             const string WINDOW_TITLE)
-{
-    if (SDL_Init(SDL_INIT_EVERYTHING) != 0)
-        logSDLError(std::cout, "SDL_Init", true);
-
-    window = SDL_CreateWindow(WINDOW_TITLE.c_str(), SDL_WINDOWPOS_CENTERED,
-       SDL_WINDOWPOS_CENTERED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN);
-    //window = SDL_CreateWindow(WINDOW_TITLE.c_str(), SDL_WINDOWPOS_CENTERED,
-       //SDL_WINDOWPOS_CENTERED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_FULLSCREEN_DESKTOP);
-    if (window == nullptr) logSDLError(std::cout, "CreateWindow", true);
-
-
-    //Khi thông thường chạy với môi trường bình thường ở nhà
-    renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED |
-                                              SDL_RENDERER_PRESENTVSYNC);
-    //Khi chạy ở máy thực hành WinXP ở trường (máy ảo)
-    //renderer = SDL_CreateSoftwareRenderer(SDL_GetWindowSurface(window));
-    if (renderer == nullptr) logSDLError(std::cout, "CreateRenderer", true);
-
-    SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "linear");
-    SDL_RenderSetLogicalSize(renderer, SCREEN_WIDTH, SCREEN_HEIGHT);
-}
 void waitUntilKeyPressed()
 {
     SDL_Event e;
@@ -55,33 +32,29 @@ void quitSDL(SDL_Window* window, SDL_Renderer* renderer)
 }
 
 
-SDL_Texture* loadTexture( std::string path, SDL_Renderer* renderer)
+SDL_Texture* LoadTexture(const std::string filepath, SDL_Renderer *render)
 {
-	//The final texture
-	SDL_Texture* newTexture = NULL;
-
-	//Load image at specified path
-	SDL_Surface* loadedSurface = IMG_Load( path.c_str() );
-	if( loadedSurface == NULL )
+	//create temp surface then load IMG to it
+	SDL_Surface* tmpsurface = NULL;
+	tmpsurface = IMG_Load(filepath.c_str());
+if( tmpsurface == NULL )
 	{
-		printf( "Unable to load image %s! SDL_image Error: %s\n", path.c_str(), IMG_GetError() );
+		printf( "Unable to load image %s! SDL_image Error: %s\n", filepath.c_str(), IMG_GetError() );
 	}
-	else
-	{
-	    SDL_SetColorKey( loadedSurface, SDL_TRUE, SDL_MapRGB( loadedSurface->format, 255, 255, 255 ) );
-		//Create texture from surface pixels
-        newTexture = SDL_CreateTextureFromSurface(renderer, loadedSurface );
-		if( newTexture == NULL )
+	//create texture to load it into
+	SDL_Texture* texture = NULL;
+	texture = SDL_CreateTextureFromSurface(render, tmpsurface);
+if( texture == NULL )
 		{
-			printf( "Unable to create texture from %s! SDL Error: %s\n", path.c_str(), SDL_GetError() );
+			cout <<  "Unable to create texture from %s! SDL Error: %s\n", filepath.c_str(), SDL_GetError() ;
 		}
+	//free temp surface
+	SDL_FreeSurface(tmpsurface);
 
-		//Get rid of old loaded surface
-		SDL_FreeSurface( loadedSurface );
-	}
-
-	return newTexture;
+	//return the loadedtexture
+	return texture;
 }
+
 void renderTexture(SDL_Texture *tex, SDL_Renderer *ren, int x, int y)
 {
 	//Thiết lập hình chữ nhật đích mà chúng ta muốn vẽ ảnh vào trong
@@ -105,22 +78,4 @@ void renderTexture(SDL_Texture *tex, SDL_Renderer *ren, int x, int y, int w, int
     //(ảnh sẽ co dãn cho khớp với kích cỡ mới)
 	SDL_RenderCopy(ren, tex, NULL, &dst);
 }
-/*void Background(int SCREEN_WIDTH, int SCREEN_HEIGHT, SDL_Renderer* renderer)
-{
-        SDL_Texture* background_1 = loadTexture( "1.png", renderer );
-        SDL_Texture* background_2 = loadTexture( "2.png", renderer );
-        SDL_Texture* background_3 = loadTexture( "3.png", renderer );
-        SDL_Texture* background_4 = loadTexture( "4.png", renderer );
-        SDL_Texture* background_5 = loadTexture( "5.png", renderer );
-        SDL_Texture* background_6 = loadTexture( "6.png", renderer );
-    while(true)
-    {
-        renderTexture(background_1, renderer, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
-        renderTexture(background_2, renderer, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
-        renderTexture(background_3, renderer, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
-        renderTexture(background_4, renderer, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
-        renderTexture(background_5, renderer, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
-        renderTexture(background_6, renderer, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
-    }
-}
-*/
+
