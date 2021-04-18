@@ -13,5 +13,6 @@ using namespace std;
 
 const int SCREEN_WIDTH = 600;
 const int SCREEN_HEIGHT = 800;
+const int speed = 5;
 
 

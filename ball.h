@@ -1,9 +1,11 @@
 #include<iostream>
 #include<SDL.h>
+#include "stdafx.h"
 using namespace std;
 class ball
 {
     public:
+    int x,y;
 	ball();
 
 	void MoveLeft();
@@ -20,16 +22,15 @@ class ball
 
 	void animationIDLE();
 	void ballup();
-
+    void isDie();
 	bool facingLeft;
 
 	bool idle;
-
+    long long countdead;
 	SDL_Rect playersourceRect;
 
 	SDL_Rect playerdesRect;
 private:
-    int x,y;
     int FRAME_MOVING; //7
 	int DELAY_MOVING;
     SDL_Rect clipsMOVING[4];

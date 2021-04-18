@@ -14,7 +14,8 @@ ball :: ball()
 	setMoving();
     x = 200;
     y = 200;
-    playerdesRect = {x,y,80,80 };
+    playerdesRect = {x,y,30,40 };
+    countdead = 0;
 }
 void ball::setMoving()
 {
@@ -50,12 +51,14 @@ void ball:: animationMOVING()
 }
 void ball::MoveLeft()
 {
+    facingLeft = false;
 	idle = false;
 	x -= 5;
 }
 
 void ball::MoveRight()
 {
+    facingLeft = true;
 	idle = false;
 	x += 5;
 }
@@ -65,20 +68,23 @@ void ball::getinput()
 	idle = true;
 	if (key[SDL_SCANCODE_A]) {
 		ball::MoveLeft();
-		idle = false;
 	}
 	if (key[SDL_SCANCODE_D]) {
 
 		ball::MoveRight();
-		idle = false;
 	}
 }
 void ball::setdesrect() {
 	playerdesRect.x = x;
-	playerdesRect.y = y += 5;
+	playerdesRect.y = y += speed;
 }
 void ball:: ballup()
 {
     playerdesRect.x = x;
-	playerdesRect.y = y -= 5;
+	playerdesRect.y = y -= speed * 2;
+}
+void ball :: isDie()
+{
+     playerdesRect.x = x;
+	playerdesRect.y = y -= speed ;
 }
