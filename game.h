@@ -14,7 +14,11 @@ public :
 	int count = -1;
 	bool die = false;
 	bool die1 = false;
+	bool sound_die  = false;
+	bool ball_up = false;
 	bool _blood = false;
+	bool _move = true;
+	bool sound = true;
 	int n = 10;
 	int count_die = 0;
 
@@ -24,12 +28,6 @@ private:
 	long long score = 0;
     int bg_y = 0;
 
-	//mouse pos && angle for gun and bullet
-	/*int angle;
-	int mouseposx;
-	int mouseposy;
-	bool mousedown;
-	int delaybullet;*/
 
 	//map
 	SDL_Texture* background;
@@ -51,19 +49,17 @@ private:
 	//sound
 	Mix_Music* Music;
 	Mix_Chunk* Mgameover;
-	/*Mix_Chunk* zombiesound;
+	Mix_Chunk* jumpsound;
+	Mix_Chunk* diesound;
 
 	//font and text
 	SDL_Color textColor;
 	SDL_Surface* textSurface;
 	SDL_Texture* mTexture;
 	string textureText;
+	string str_score;
 	SDL_Rect scoreBOX;
-	SDL_Rect healthbardesrect;
-	SDL_Rect healthbarsourcerect;
 	TTF_Font* gFont;
-	SDL_Texture* HEALTHBARTexture;
-	int healbox;*/
 
 	SDL_Renderer* renderer;
 	SDL_Window* window;

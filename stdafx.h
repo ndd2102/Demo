@@ -6,7 +6,7 @@
 #include <vector>
 #include <stdio.h>
 #include <SDL_mixer.h>
-//#include <SDL_ttf.h>
+#include <SDL_ttf.h>
 #include <ctime>
 #include <stdlib.h>
 using namespace std;

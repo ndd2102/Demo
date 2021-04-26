@@ -33,9 +33,9 @@ class ball
 private:
     int FRAME_MOVING; //7
 	int DELAY_MOVING;
-    SDL_Rect clipsMOVING[4];
+    SDL_Rect clipsMOVING[8];
     int FRAME_Idle; //4
 	int DELAY_Idle; //4
-	SDL_Rect clipsIDLE[4];
+	SDL_Rect clipsIDLE[8];
     int frameClip;
 };

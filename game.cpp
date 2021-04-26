@@ -5,7 +5,7 @@ void game::init(int SCREEN_WIDTH, int SCREEN_HEIGHT)
 {
 	//INIT ALL SDL COMPONENTS
 	SDL_Init(SDL_INIT_EVERYTHING);
-	//TTF_Init();
+	TTF_Init();
 
 	//CREATE A GAME WINDOW
 	window = NULL;
@@ -19,16 +19,23 @@ void game::init(int SCREEN_WIDTH, int SCREEN_HEIGHT)
 	//LOAD TEXTURE
 	Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048);
 	background = IMG_LoadTexture(renderer, "background.jpg");
-	Ball = IMG_LoadTexture(renderer, "foo.png");
+	Ball = IMG_LoadTexture(renderer, "cat.png");
 	gameover = IMG_LoadTexture(renderer, "gameover.png");
 	blood = IMG_LoadTexture(renderer, "blood.png");
 	Music = Mix_LoadMUS("theme_song.mp3");
+	jumpsound = Mix_LoadWAV("jumpOnCrossbar.wav ");
+	diesound = Mix_LoadWAV("die.wav ");
 	Mgameover = Mix_LoadWAV("audio_game_over.wav ");
-	health = 30;
+	health = 3;
+	// LOAD FONT
+	scoreBOX = { SCREEN_WIDTH / 2, 40 , 100, 100  };
+	gFont = TTF_OpenFont("font.ttf", 20);
+	textColor = { 0, 0, 0 };
 }
 void game::draw()
 {
 	SDL_RenderClear(renderer);
+    score = SDL_GetTicks()/1000;
 	bg_y -= 2;
 	renderTexture(background, renderer, 0, bg_y, SCREEN_WIDTH, 3200);
 	renderTexture(background, renderer, 0, bg_y + 3200, SCREEN_WIDTH, 3200);
@@ -36,9 +43,11 @@ void game::draw()
 	{
 		bg_y = 0;
 	}
-	if ( !die )
-		_ball.getinput();
-	if (_ball.idle == true)
+	if ( _move )
+    {
+        _ball.getinput();
+    }
+	if (_ball.idle)
 	{
 		if (!die1)
 			_ball.setdesrect();
@@ -48,7 +57,7 @@ void game::draw()
 	else
 	{
 
-		if (_ball.facingLeft == true)
+		if (!_ball.facingLeft)
 		{
 			_ball.setdesrect();
 			_ball.animationMOVING();
@@ -62,11 +71,18 @@ void game::draw()
 		}
 
 	}
-	if ( _ball.y > 720)
+	if ( _ball.y > 720 || _ball.y < 70)
 	{
 		die1 = true;
-
+		_move = false;
+		sound_die = true;
+		if(sound_die && sound){
+			  Mix_PlayChannel(-1, diesound, 0);
+			  sound_die = false;
+			  sound = false;
+			 }
 	}
+	else(_move = true);
 	//draw bar
 	count++;
 	//bar __bar;
@@ -117,43 +133,45 @@ void game::draw()
 				_ball.y = _bar2[3].barRect.y - 80;
 				health--;
 			}
+			if(count_die % 52 == 0)
+            {
+                sound = true;
+            }
 			 die = false;
+			 _move = true;
 		}
 		if (die1)
 		{
 			renderTexture(blood, renderer, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
 			_ball.isDie();
 			count_die++;
-			die1 = false;
-			if (count_die % 5000 == 0) {
+			ball_up = false;
+			if (count_die % 50 == 0) {
 				_ball.x = _bar2[3].barRect.x;
 				_ball.y = _bar2[3].barRect.y - 80;
 				health--;
 			}
-		}
-		//SDL_SetRenderDrawColor( renderer, 0, 0xFF, 0, 0xFF );
-		//SDL_RenderCopyEx(renderer, enemyTex, &_player.playersourceRect, &_enemy[i].enemyDesRect, NULL, NULL, SDL_FLIP_NONE);
-		 //SDL_RenderFillRect(renderer, &_bar[i].barRect);
-		/*if (_enemy[i].isDead == false)
-		{
-
-			if (_enemy[i].faceLeft == true)
-			{
-				SDL_RenderCopyEx(maingamerenderer, enemyTex, &_player.playersourceRect, &_enemy[i].enemyDesRect, NULL, NULL, SDL_FLIP_HORIZONTAL);
-			}
-			else
-			{
-				SDL_RenderCopyEx(maingamerenderer, enemyTex, &_player.playersourceRect, &_enemy[i].enemyDesRect, NULL, NULL, SDL_FLIP_NONE);
-			}
-		}
-
-*/
-        if(die1 == false){
-            if (SDL_HasIntersection(&_bar2[i].barRect, &_ball.playerdesRect))
+			if(count_die % 52 == 0)
             {
+                sound = true;
+            }
+			die1 = false;
+		}
+		if(ball_up)
+        {
+             Mix_PlayChannel(-1, jumpsound, 0);
             _ball.ballup();
-			score += 1;
-		    }
+            ball_up = false;
+        }
+	}
+
+	for (int i = 0; i < _bar2.size(); i++)
+	{
+	     if ((_ball.playerdesRect.x >= _bar2[i].barRect.x-29) && (_ball.playerdesRect.x <= _bar2[i].barRect.x+100) && (_ball.playerdesRect.y == _bar2[i].barRect.y-50)){
+
+           // _ball.ballup();
+            ball_up = true;
+            //Mix_PlayChannel(-1, jumpsound, 0);
 		}
 	}
 	for (int i = 0; i < _bar1.size(); i++)
@@ -165,10 +183,24 @@ void game::draw()
 		if (SDL_HasIntersection(&_bar1[i].barRect, &_ball.playerdesRect))
 		{
 			die = true;
-			//cout << health << endl;
-		}
-	}
+			_move = false;
+			sound_die = true;
 
+		}
+		if(sound_die && sound){
+			  Mix_PlayChannel(-1, diesound, 0);
+			  sound_die = false;
+			  sound = false;
+			 }
+	}
+    str_score = "Score : ";
+    score = SDL_GetTicks()/1000;
+    textureText = to_string(score);
+    str_score += textureText;
+	textSurface = TTF_RenderText_Blended(gFont,  str_score.c_str(), textColor);
+	mTexture = SDL_CreateTextureFromSurface(renderer, textSurface);
+	scoreBOX = { SCREEN_WIDTH - 100, 40 , textSurface->w, textSurface->h };
+	SDL_RenderCopy(renderer, mTexture, NULL, &scoreBOX);
 	SDL_RenderPresent(renderer);
 
 }
@@ -198,6 +230,7 @@ void game::gameloop()
 		if (health <= 0)
 		{
 			Mix_PauseMusic();
+			SDL_Delay(10);
 			Mix_PlayChannel(-1, Mgameover, 0);
 			SDL_Delay(1000);
 			renderTexture(gameover, renderer, 0, 350, 600, 100);

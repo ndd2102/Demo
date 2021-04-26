@@ -5,36 +5,36 @@ ball :: ball()
     idle = true;
     facingLeft = false;
     frameClip = 0;
-    FRAME_Idle = 4;
-	DELAY_Idle = 4;
+    FRAME_Idle = 8;
+	DELAY_Idle = 8;
 	setIdle();
 
-	FRAME_MOVING = 4;
-	DELAY_MOVING = 4;
+	FRAME_MOVING = 8;
+	DELAY_MOVING = 8;
 	setMoving();
     x = 200;
     y = 200;
-    playerdesRect = {x,y,40,60 };
+    playerdesRect = {x,y,50,43 };
     countdead = 0;
 }
 void ball::setMoving()
 {
     for (int i = 0; i < FRAME_MOVING; i++)
 	{
-		clipsMOVING[i].x = i * 64;
+		clipsMOVING[i].x = i * 189;
 		clipsMOVING[i].y = 0;
-		clipsMOVING[i].w = 64;
-		clipsMOVING[i].h = 205;
+		clipsMOVING[i].w = 189;
+		clipsMOVING[i].h = 165;
 	}
 }
 void ball::setIdle()
 {
 	for (int i = 0; i < FRAME_Idle; i++)
 	{
-		clipsIDLE[i].x = i * 64;
+		clipsIDLE[i].x = i * 189;
 		clipsIDLE[i].y = 0;
-		clipsIDLE[i].w = 64;
-		clipsIDLE[i].h = 205;
+		clipsIDLE[i].w = 189;
+		clipsIDLE[i].h = 165;
 	}
 }
 void ball::animationIDLE()
