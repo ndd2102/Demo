@@ -1,7 +1,6 @@
 #include<SDL.h>
-#include "SDL_utils.h"
 #include"game.h"
-#include "stdafx.h"
+
 using namespace std;
 
 

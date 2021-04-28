@@ -1,6 +1,8 @@
+#ifndef BALL_H
+#define BALL_H
 #include<iostream>
 #include<SDL.h>
-#include "stdafx.h"
+
 using namespace std;
 class ball
 {
@@ -9,18 +11,20 @@ class ball
 	ball();
 
 	void MoveLeft();
-
 	void MoveRight();
 
 	void getinput();
 	void setdesrect();
 
 	void setMoving();
-
 	void animationMOVING();
-	void setIdle();
 
+	void setIdle();
 	void animationIDLE();
+
+	void setDead();
+	void animationDead();
+
 	void ballup();
     void isDie();
 	bool facingLeft;
@@ -28,14 +32,22 @@ class ball
 	bool idle;
     long long countdead;
 	SDL_Rect playersourceRect;
-
 	SDL_Rect playerdesRect;
+
+	SDL_Rect CatdesRect;
+	SDL_Rect DogdesRect;
 private:
-    int FRAME_MOVING; //7
+    int FRAME_MOVING;
 	int DELAY_MOVING;
     SDL_Rect clipsMOVING[8];
-    int FRAME_Idle; //4
-	int DELAY_Idle; //4
-	SDL_Rect clipsIDLE[8];
+
+    int FRAME_Idle;
+	int DELAY_Idle;
+	SDL_Rect clipsIDLE[10];
+
+    int FRAME_Dead;
+	int DELAY_Dead;
+	SDL_Rect clipsDead[10];
     int frameClip;
 };
+#endif

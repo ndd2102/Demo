@@ -1,17 +1,18 @@
-#ifndef BAR__H
-#define BAR__H
+#ifndef HEART_H
+#define HEART_H
 #include<iostream>
 #include<SDL.h>
-
+#include "bar.h"
 using namespace std;
-class bar
+class heart
 {
 private:
     int z;
 public:
-    bar();
+    heart();
     int x,y;
-    SDL_Rect barRect;
+    SDL_Rect heartRect;
     void updatePos();
 };
+
 #endif
